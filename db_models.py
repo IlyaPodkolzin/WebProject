@@ -4,66 +4,68 @@ from flask_login import UserMixin
 import datetime
 from db_session import ORMBase
 
-# взято из примера пока не использовать
+type_table = Table('type', ORMBase.metadata,
+                   Column('id', Integer, primary_key=True, autoincrement=True),
+                   Column('name', String, nullable=False))
+
+
 class User(ORMBase, UserMixin):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
+    inn = Column(Integer, nullable=False, unique=True)
     email = Column(String, nullable=False, unique=True)
-    hashed_password = Column(String, nullable=False)
+    inn_password = Column(String, nullable=False)
+    checks = orm.relation('Check', secondary='expenses', back_populates='users')
 
-    def __init__(self, name, email, password):
+    def __init__(self, name, email, password, inn):
         self.name = name
         self.email = email
-        self.hashed_password = generate_password_hash(password)
+        self.inn_password = password
+        self.inn = inn
 
     def set_password(self, password):
-        self.hashed_password = generate_password_hash(password)
+        self.inn_password = password
 
     def check_password(self, password):
-        return check_password_hash(self.hashed_password, password)
+        return check_password_hash(generate_password_hash(self.inn_password), password)
 
 
-class Group(ORMBase):
-    __tablename__ = 'groups'
+class Check(ORMBase):
+    __tablename__ = 'check'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    str_Qr = Column(String, nullable=False)
+    id_type = Column(Integer, ForeignKey('type.id'))
+    users = orm.relation('User', secondary='expenses', back_populates='check')
+    time_added = Column(DateTime, nullable=False, default=datetime.datetime.now)
+
+    def __init__(self, str_Qr, id_type, time):
+        self.str_Qr = str_Qr
+        self.id_type = id_type
+        self.time_added = time
+
+
+class Expenses(ORMBase):
+    __tablename__ = 'expenses'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    max_members = Column(Integer, nullable=False)
-    admin_id = Column(Integer, ForeignKey('users.id'))
-    admin = orm.relation('User')
-    users = orm.relation('User', secondary='group2user', back_populates='groups')
+    id_user = Column(Integer, ForeignKey('users.id'))
+    id_check = Column(Integer, ForeignKey('check.id'))
+    all_expenses = Column(default={1: 0, 2: 0,
+                                         3: 0, 4: 0,
+                                         5: 0, 6: 0,
+                                         7: 0, 8: 0,
+                                         9: 0, 10: 0,
+                                         11: 0, 12: 0})
+    type_expens = Column(default={1: {}, 2: {},
+                                        3: {}, 4: {},
+                                        5: {}, 6: {},
+                                        7: {}, 8: {},
+                                        9: {}, 10: {},
+                                        11: {}, 12: {}})
 
-    def __init__(self, name, max_members, admin_id):
-        self.name = name
-        self.max_members = max_members
-        self.admin_id = admin_id
-
-    def get_active_tasks(self):
-        return [task for task in self.tasks if task.status != 1]
-
-
-class Task(ORMBase):
-    __tablename__ = 'tasks'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    author_id = Column(Integer, ForeignKey('users.id'))
-    performer_id = Column(Integer, ForeignKey('users.id'))
-    group_id = Column(Integer, ForeignKey('groups.id'))
-    priority = Column(Integer, nullable=False)  # 0 - high, 1 - medium, 2 - low
-    description = Column(String, nullable=False)
-    status = Column(Integer, nullable=True, default=0)  # 0 - open, 1 - closed, 2 - waiting for check
-    creation_time = Column(DateTime, nullable=False, default=datetime.datetime.now)
-
-    author = orm.relation('User', foreign_keys=[author_id])
-    performer = orm.relation('User', foreign_keys=[performer_id])
-    group = orm.relation('Group', backref='tasks')
-
-    def __init__(self, name, author_id, performer_id, group_id, priority, description):
-        self.name = name
-        self.author_id = author_id
-        self.performer_id = performer_id
-        self.group_id = group_id
-        self.priority = priority
-        self.description = description
+    def __init__(self, user, check, expense, type_):
+        self.id_user = user
+        self.id_check = check
+        self.all_expenses[datetime.datetime.now().month] += expense
+        self.type_expens[datetime.datetime.now().month][type_] += expense
