@@ -1,7 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, PasswordField, BooleanField, SelectField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
-import db_session
 from db_models import type_table
 
 
