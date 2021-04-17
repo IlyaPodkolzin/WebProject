@@ -4,9 +4,9 @@ from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 from db_models import type_table
 
 
-session = db_session.create_session()
-type = session.query(type_table).all()
-TYPE = [item for item in type]
+# session = db_session.create_session() нужно исправить ошибку!
+# type = session.query(type_table).all()
+TYPE = ['Другое', 'Развлечения', 'Рестораны и кафе', 'Коммунальные платижи']
 
 
 class RegistrationForm(FlaskForm):
