@@ -53,18 +53,18 @@ class Expenses(ORMBase):
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_user = Column(Integer, ForeignKey('users.id'))
     id_check = Column(Integer, ForeignKey('check.id'))
-    all_expenses = Column(nullable=False, default={1: 0, 2: 0,
-                                                   3: 0, 4: 0,
-                                                   5: 0, 6: 0,
-                                                   7: 0, 8: 0,
-                                                   9: 0, 10: 0,
-                                                   11: 0, 12: 0})
-    type_expens = Column(nullable=False, default={1: {}, 2: {},
-                                                  3: {}, 4: {},
-                                                  5: {}, 6: {},
-                                                  7: {}, 8: {},
-                                                  9: {}, 10: {},
-                                                  11: {}, 12: {}})
+    all_expenses = Column(Integer, nullable=False, default={1: 0, 2: 0,
+                                                            3: 0, 4: 0,
+                                                            5: 0, 6: 0,
+                                                            7: 0, 8: 0,
+                                                            9: 0, 10: 0,
+                                                            11: 0, 12: 0})
+    type_expens = Column(Integer, nullable=False, default={1: {}, 2: {},
+                                                           3: {}, 4: {},
+                                                           5: {}, 6: {},
+                                                           7: {}, 8: {},
+                                                           9: {}, 10: {},
+                                                           11: {}, 12: {}})
 
     def __init__(self, user, check, expense, type_):
         self.id_user = user

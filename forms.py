@@ -6,7 +6,7 @@ from db_models import type_table
 
 # session = db_session.create_session() нужно исправить ошибку!
 # type = session.query(type_table).all()
-TYPE = ['Другое', 'Развлечения', 'Рестораны и кафе', 'Коммунальные платижи']
+TYPE = ['Другое', 'Развлечения', 'Рестораны и кафе', 'Коммунальные платежи']
 
 
 class RegistrationForm(FlaskForm):
