@@ -1,0 +1,6 @@
+flask
+wtforms
+flask-wtf
+flask_login
+werkzeug
+sqlalchemy==1.4.9
