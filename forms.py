@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
+from data import db_session
 from wtforms import StringField, IntegerField, PasswordField, BooleanField, SelectField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
-from db_models import type_table
+from wtforms.validators import DataRequired, Email, EqualTo
+from data.db_models import type_table
 
 
 # session = db_session.create_session() нужно исправить ошибку!

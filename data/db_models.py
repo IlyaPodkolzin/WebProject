@@ -2,7 +2,7 @@ from sqlalchemy import orm, Column, Integer, String, DateTime, ForeignKey, Table
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 import datetime
-from db_session import ORMBase
+from data.db_session import ORMBase
 
 type_table = Table('type', ORMBase.metadata,
                    Column('id', Integer, primary_key=True, autoincrement=True),
