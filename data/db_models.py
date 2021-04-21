@@ -38,13 +38,14 @@ class Check(ORMBase):
     id_type = Column(Integer, ForeignKey('type.id'))
     users = orm.relation('User', secondary='expenses', back_populates='check')
     time_added = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    description = Column(String, default="Отсутствует")
     information = Column(String, nullable=False, default='Просто чек')
 
-    def __init__(self, str_Qr, id_type, time, info):
+    def __init__(self, str_Qr, id_type, description, info):
         self.str_Qr = str_Qr
         self.id_type = id_type
+        self.description = description
         self.information = info
-        self.time_added = time
 
 
 class Expenses(ORMBase):
