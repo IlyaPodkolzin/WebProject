@@ -5,36 +5,45 @@
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <p>
-        {{ form.str_Qr.label }}<br>
-        {{ form.str_Qr(class="form-control") }}<br>
-        {% for error in form.str_Qr.errors %}
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
     {% endfor %}
     </p>
     <p>
-        {{ form.description.label }}<br>
-        {{ form.description(class="form-control") }}<br>
-        {% for error in form.description.errors %}
+        {{ form.email.label }}<br>
+        {{ form.email(class="form-control", type="email") }}<br>
+        {% for error in form.email.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
     {% endfor %}
     </p>
     <p>
-        {{ form.id_type.label }}<br>
-        {{ form.id_type(class="form-control") }}<br>
-        {% for error in form.id_type.errors %}
+        {{ form.inn.label }}<br>
+        {{ form.inn(class="form-control") }}<br>
+        {% for error in form.inn.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
     {% endfor %}
     </p>
     <p>
-        {{ form.information.label }}<br>
-        {{ form.information(class="form-control") }}<br>
-        {% for error in form.information.errors %}
+        {{ form.password.label }}<br>
+        {{ form.password(class="form-control", type="password") }}<br>
+        {% for error in form.password.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.check_password.label }}<br>
+        {{ form.check_password(class="form-control", type="password") }}<br>
+        {% for error in form.check_password.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
