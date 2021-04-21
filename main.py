@@ -5,10 +5,19 @@ from werkzeug.utils import redirect
 from data import db_session
 import data.db_models
 import forms
+import smtplib
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'check_check_key'
+
+
+def send_mail(msg, tomail):
+    smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
+    smtpObj.starttls()
+    smtpObj.login('pweb2800@gmail.com', '123YlWeb')
+    smtpObj.sendmail(smtpObj.user, tomail, msg)
+    smtpObj.quit()
 
 
 @app.route('/registration', methods=['GET', 'POST'])
@@ -21,6 +30,7 @@ def registration():
         try:
             db_sess.add(user)
             db_sess.commit()
+            send_mail("Поздравляем, вы зарегистрировались!", form.email)
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
