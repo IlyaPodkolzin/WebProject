@@ -1,10 +1,10 @@
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from werkzeug.utils import redirect
+from data import db_session, db_models
 
-from data import db_session
-import data.db_models
+from data.db_models import User, Check, Expenses
 import forms
 import smtplib
 
@@ -19,7 +19,8 @@ login_manager.login_view = '/login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return data.User.get(user_id)
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
 
 
 def send_mail(msg, tomail):
@@ -35,12 +36,12 @@ def registration():
     form = forms.RegistrationForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = data.db_models.User(form.name.data, form.email.data,
-                                   form.password.data, form.inn.data)
+        user = User(form.name.data, form.email.data,
+                    form.password.data, form.inn.data)
         try:
             db_sess.add(user)
             db_sess.commit()
-            send_mail("Поздравляем, вы зарегистрировались!", form.email)
+            send_mail("Поздравляем, вы зарегистрировались в CheckЧек!", form.email)
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
@@ -53,13 +54,39 @@ def registration():
     return render_template('registration.html', title='Регистрация', form=form)
 
 
-#def add_new_check():
-#    form = forms.AddCheckForm()
-#    if form.validate_on_submit():
-#        db_sess = db_session.create_session()
-#        check = data.db_models.Check(form.str_Qr.data, form.id_type.data,
-#                                     form.description.data, form.information.data)
-#        db_sess = data.db_session.create_session()
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = forms.LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect('/')
+        return render_template('login.html', title="Авторизация", form=form)
+    return render_template('login.html', title="Авторизация", form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+
+
+@app.route('/add_new_check', methods=['GET', 'POST'])
+@login_required
+def add_new_check():
+    form = forms.AddCheckForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        check = Check(form.str_Qr.data, form.id_type.data,
+                      form.description.data, form.information.data)
+        current_user.checks.append(check)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('add_new_check.html', title="Добавление нового чека", form=form)
 
 
 if __name__ == '__main__':
