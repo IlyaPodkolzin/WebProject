@@ -25,10 +25,8 @@ def load_user(user_id):
 
 def send_mail(msg, tomail):
     smtpObj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    smtpObj.ehlo()
     smtpObj.login("pweb2800@gmail.com", "123YlWeb")
-    smtpObj.sendmail('', tomail, msg)
-    smtpObj.quit()
+    smtpObj.sendmail('lvml@dvm.ru', tomail, msg)
 
 
 @app.route('/registration', methods=['GET', 'POST'])
@@ -41,6 +39,7 @@ def registration():
         try:
             db_sess.add(user)
             db_sess.commit()
+            send_mail("Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
