@@ -50,7 +50,7 @@ def registration():
                                    message='Произошла неизвестная ошибка.')
         finally:
             db_sess.close()
-        return redirect('/login')
+            return redirect('/login')
     return render_template('registration.html', title='Регистрация', form=form)
 
 
