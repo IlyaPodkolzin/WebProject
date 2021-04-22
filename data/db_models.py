@@ -50,7 +50,6 @@ class Check(ORMBase):
 
 class Expenses(ORMBase):
     __tablename__ = 'expenses'
-
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_user = Column(Integer, ForeignKey('users.id'))
     id_check = Column(Integer, ForeignKey('check.id'))
