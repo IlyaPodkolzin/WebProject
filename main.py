@@ -24,10 +24,10 @@ def load_user(user_id):
 
 
 def send_mail(msg, tomail):
-    smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
-    smtpObj.starttls()
-    smtpObj.login('pweb2800@gmail.com', '123YlWeb')
-    smtpObj.sendmail(smtpObj.user, tomail, msg)
+    smtpObj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    smtpObj.ehlo()
+    smtpObj.login("pweb2800@gmail.com", "123YlWeb")
+    smtpObj.sendmail('', tomail, msg)
     smtpObj.quit()
 
 
@@ -41,7 +41,6 @@ def registration():
         try:
             db_sess.add(user)
             db_sess.commit()
-            send_mail("Поздравляем, вы зарегистрировались в CheckЧек!", form.email)
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
@@ -56,6 +55,7 @@ def registration():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    logout_user()
     form = forms.LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
