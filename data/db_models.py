@@ -32,11 +32,11 @@ class User(ORMBase, UserMixin):
 
 
 class Check(ORMBase):
-    __tablename__ = 'check'
+    __tablename__ = 'checks'
     id = Column(Integer, primary_key=True, autoincrement=True)
     str_Qr = Column(String, nullable=False)
     id_type = Column(Integer, ForeignKey('type.id'))
-    users = orm.relation('User', secondary='expenses', back_populates='check')
+    users = orm.relation('User', secondary='expenses', back_populates='checks')
     time_added = Column(DateTime, nullable=False, default=datetime.datetime.now)
     description = Column(String, default="Отсутствует")
     information = Column(String, nullable=False, default='Просто чек')
@@ -52,7 +52,7 @@ class Expenses(ORMBase):
     __tablename__ = 'expenses'
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_user = Column(Integer, ForeignKey('users.id'))
-    id_check = Column(Integer, ForeignKey('check.id'))
+    id_check = Column(Integer, ForeignKey('checks.id'))
     all_expenses = Column(Integer, nullable=False, default={1: 0, 2: 0,
                                                             3: 0, 4: 0,
                                                             5: 0, 6: 0,

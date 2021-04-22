@@ -1,5 +1,6 @@
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
+from flask_login import LoginManager
 from werkzeug.utils import redirect
 
 from data import db_session
@@ -10,6 +11,15 @@ import smtplib
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'check_check_key'
+
+db_session.global_init('web_db.sqlite')
+login_manager = LoginManager(app)
+login_manager.login_view = '/login'
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return data.User.get(user_id)
 
 
 def send_mail(msg, tomail):
