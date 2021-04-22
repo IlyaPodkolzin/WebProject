@@ -37,7 +37,7 @@ def registration():
         user = User(form.name.data, form.email.data,
                     form.password.data, form.inn.data)
         try:
-            db_sess.add(user)
+            db_sess.add(user) # какая-то ошибка в регистрации
             db_sess.commit()
             send_mail("Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
         except IntegrityError:
