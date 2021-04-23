@@ -45,7 +45,6 @@ class CreateTypeForm(FlaskForm):
 
 class AddCheckForm(FlaskForm):
     str_Qr = StringField('Расшифрованный Qr код из чека:', validators=[DataRequired()])
-    description = TextAreaField('Описание:', validators=[DataRequired()])
     id_type = SelectField('Тип расходов:', choices=TYPE, coerce=str, default='другое')
     information = StringField('Дополнительная информация:', validators=[DataRequired()])
     submit = SubmitField('Добавить')

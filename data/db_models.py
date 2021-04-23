@@ -16,7 +16,6 @@ class User(ORMBase, UserMixin):
     inn = Column(Integer, nullable=False, unique=True)
     email = Column(String, nullable=False, unique=True)
     inn_password = Column(String, nullable=False)
-    checks = orm.relation('Check', secondary='expenses', back_populates='users')
 
     def __init__(self, name, email, password, inn):
         self.name = name
@@ -36,15 +35,12 @@ class Check(ORMBase):
     id = Column(Integer, primary_key=True, autoincrement=True)
     str_Qr = Column(String, nullable=False)
     id_type = Column(Integer, ForeignKey('type.id'))
-    users = orm.relation('User', secondary='expenses', back_populates='checks')
     time_added = Column(DateTime, nullable=False, default=datetime.datetime.now)
-    description = Column(String, default="Отсутствует")
     information = Column(String, nullable=False, default='Просто чек')
     id_user = Column(Integer, ForeignKey('users.id'))
 
-    def __init__(self, str_Qr, id_type, description, info, user):
+    def __init__(self, str_Qr, id_type, info, user):
         self.id_user = user
         self.str_Qr = str_Qr
         self.id_type = id_type
-        self.description = description
         self.information = info
