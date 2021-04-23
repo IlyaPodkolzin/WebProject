@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block base_content %}
+<link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+<h1 class="my-3">Авторизация</h1>
+<div class="border border-5 p-3">
+    <p><b>Имя:</b> {{ user.name }}</p>
+    <p><b>Email:</b> {{ user.email }}</p>
+    <p><b>ИНН:</b> {{ user.inn }}</p>
+</div>
+<a href="https://localhost:8080/logout" class="btn btn-outline-danger my-3">Выйти из аккаунта</a>
+{% endblock %}
