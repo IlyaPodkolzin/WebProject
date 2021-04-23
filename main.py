@@ -4,7 +4,7 @@ from flask_login import LoginManager, current_user, login_required, login_user, 
 from werkzeug.utils import redirect
 from data import db_session, db_models
 
-from data.db_models import User, Check, Expenses
+from data.db_models import User, Check, type_table
 import forms
 import smtplib
 

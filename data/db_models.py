@@ -40,34 +40,11 @@ class Check(ORMBase):
     time_added = Column(DateTime, nullable=False, default=datetime.datetime.now)
     description = Column(String, default="Отсутствует")
     information = Column(String, nullable=False, default='Просто чек')
+    id_user = Column(Integer, ForeignKey('users.id'))
 
-    def __init__(self, str_Qr, id_type, description, info):
+    def __init__(self, str_Qr, id_type, description, info, user):
+        self.id_user = user
         self.str_Qr = str_Qr
         self.id_type = id_type
         self.description = description
         self.information = info
-
-
-class Expenses(ORMBase):
-    __tablename__ = 'expenses'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    id_user = Column(Integer, ForeignKey('users.id'))
-    id_check = Column(Integer, ForeignKey('checks.id'))
-    all_expenses = Column(Integer, nullable=False, default={1: 0, 2: 0,
-                                                            3: 0, 4: 0,
-                                                            5: 0, 6: 0,
-                                                            7: 0, 8: 0,
-                                                            9: 0, 10: 0,
-                                                            11: 0, 12: 0})
-    type_expens = Column(Integer, nullable=False, default={1: {}, 2: {},
-                                                           3: {}, 4: {},
-                                                           5: {}, 6: {},
-                                                           7: {}, 8: {},
-                                                           9: {}, 10: {},
-                                                           11: {}, 12: {}})
-
-    def __init__(self, user, check, expense, type_):
-        self.id_user = user
-        self.id_check = check
-        self.all_expenses[int(datetime.datetime.now().month)] += expense
-        self.type_expens[int(datetime.datetime.now().month)][type_] += expense
