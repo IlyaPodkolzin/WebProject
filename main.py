@@ -85,6 +85,15 @@ def add_new_check():
     return render_template('add_new_check.html', title="Добавление нового чека", form=form)
 
 
+@app.route('/add_new_type', methods=['GET', 'POST'])
+@login_required
+def add_new_type():
+    form = forms.CreateTypeForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+
+
+
 if __name__ == '__main__':
     db_session.global_init("db/blogs.db")
     app.run(port=8080, host='127.0.0.1')
