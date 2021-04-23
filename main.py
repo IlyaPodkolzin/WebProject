@@ -8,7 +8,6 @@ from data.db_models import User, Check, type_table
 import forms
 import smtplib
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'check_check_key'
 
@@ -20,10 +19,12 @@ smtpObj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 smtpObj.ehlo()
 smtpObj.login("pweb2800@gmail.com", "123YlWeb")
 
+db_sess = db_session.create_session()
+TYPE = db_sess.query(type_table).all()
+
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
 
@@ -31,12 +32,13 @@ def load_user(user_id):
 def registration():
     form = forms.RegistrationForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
         user = User(form.name.data, form.email.data, form.password.data, form.inn.data)
         try:
             db_sess.add(user)
             db_sess.commit()
             smtpObj.sendmail('pweb2800@gmail.com', "Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
+            global MAIL
+            MAIL = user.email
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
@@ -44,7 +46,6 @@ def registration():
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Произошла неизвестная ошибка.')
         finally:
-            db_sess.close()
             return redirect('/login')
     return render_template('registration.html', title='Регистрация', form=form)
 
@@ -54,11 +55,10 @@ def login():
     logout_user()
     form = forms.LoginForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect('/')
+            return redirect('/')  # в личный кобинет
         return render_template('login.html', title="Авторизация", form=form)
     return render_template('login.html', title="Авторизация", form=form)
 
@@ -67,7 +67,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect('/login')
 
 
 @app.route('/add_new_check', methods=['GET', 'POST'])
@@ -75,13 +75,13 @@ def logout():
 def add_new_check():
     form = forms.AddCheckForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
         check = Check(form.str_Qr.data, form.id_type.data,
                       form.description.data, form.information.data)
         current_user.checks.append(check)
         db_sess.merge(current_user)
         db_sess.commit()
-        return redirect('/')
+        smtpObj.sendmail('pweb2800@gmail.com', "Вы добавили новый чек!", MAIL)
+        return redirect('/')  # страница всех чеков пользователя
     return render_template('add_new_check.html', title="Добавление нового чека", form=form)
 
 
@@ -90,8 +90,17 @@ def add_new_check():
 def add_new_type():
     form = forms.CreateTypeForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-
+        type = type_table(form.name.data)
+        try:
+            db_sess.add(type)
+            db_sess.commit()
+            smtpObj.sendmail('pweb2800@gmail.com', "Вы добавили новую категорию расходов!", MAIL)
+        except Exception:
+            return render_template("add_new_type.html", title="Добавление нового типа", form=form,
+                                   message='Произошла неизвестная ошибка.')
+        finally:
+            return redirect('/') # страницу растраты за месяц
+    return render_template("add_new_type.html", title="Добавление нового типа", form=form)
 
 
 if __name__ == '__main__':
