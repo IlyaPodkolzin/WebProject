@@ -32,11 +32,7 @@
     {% endfor %}
     </p>
     <p>{{ form.remember_me() }}{{ form.remember_me.label }}</p>
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    <div class="form-row">
-                 <div class="col">
-                     <a href="/registration" class="btn btn-primary">Регистрация</a>
-                 </div>
-             </div>
+    {{ form.submit(type="submit", class="btn btn-primary") }}
+    <a href="/registration" class="btn btn-outline-primary">Регистрация</a>
 </form>
 {% endblock %}

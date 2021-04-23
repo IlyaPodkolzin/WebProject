@@ -103,6 +103,12 @@ def add_new_type():
     return render_template("add_new_type.html", title="Добавление нового типа", form=form)
 
 
+@app.route('/personal_account', methods=['GET'])
+@login_required
+def personal_account():
+    render_template('personal_account.html', user=current_user)
+
+
 if __name__ == '__main__':
     db_session.global_init("db/blogs.db")
     app.run(port=8080, host='127.0.0.1')
