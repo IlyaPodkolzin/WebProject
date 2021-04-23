@@ -16,6 +16,10 @@ db_session.global_init('web_db.sqlite')
 login_manager = LoginManager(app)
 login_manager.login_view = '/login'
 
+smtpObj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+smtpObj.ehlo()
+smtpObj.login("pweb2800@gmail.com", "123YlWeb")
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -23,23 +27,16 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-def send_mail(msg, tomail):
-    smtpObj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    smtpObj.login("pweb2800@gmail.com", "123YlWeb")
-    smtpObj.sendmail('lvml@dvm.ru', tomail, msg)
-
-
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
     form = forms.RegistrationForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = User(form.name.data, form.email.data,
-                    form.password.data, form.inn.data)
+        user = User(form.name.data, form.email.data, form.password.data, form.inn.data)
         try:
-            db_sess.add(user) # какая-то ошибка в отправлении письма
+            db_sess.add(user)
             db_sess.commit()
-            send_mail("Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
+            smtpObj.sendmail('pweb2800@gmail.com', "Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
