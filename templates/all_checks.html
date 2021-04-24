@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block base_navbar %}
+<li class="nav-item">
+    <a class="nav-link" href="/personal_account">Личный кабинет</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/add_new_check">Добавить чек</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/add_new_type">Добавить тип расхода</a>
+</li>
+{% endblock %}
+
+{% block base_content %}
+    <div class="row m-2">
+        {% for check in checks %}
+            {% expense_type = check.id_type %}
+            <div class="card-body bg-light col-md-3 border border-primary m-3">
+                <h5 class="card-title">{{ check.name }} (ID: {{ group.id }})</h5>
+                <p class="card-text">
+                    Расшифрованный QR-код: {{ check.str_Qr }}
+                    Тип расхода: {{ type_table.expense_type }}
+                    Краткая информация: {{ check.information }}
+                    Время добавления: {{ check.time_added }}
+                </p>
+            </div>
+    </div>
+{% endblock %}

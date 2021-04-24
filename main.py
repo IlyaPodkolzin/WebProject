@@ -1,4 +1,4 @@
-import datetime
+import os
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user, user_logged_in
@@ -21,10 +21,7 @@ smtpObj.ehlo()
 smtpObj.login("pweb2800@gmail.com", "123YlWeb")
 
 db_sess = db_session.create_session()
-type = db_sess.query(Type).all()
-TYPE = list()
-for i in type:
-    TYPE.append(i.name)
+TYPE = db_sess.query(Type).all()
 
 
 @login_manager.user_loader
@@ -103,7 +100,7 @@ def add_new_type():
             return render_template("add_new_type.html", title="Добавление нового типа", form=form,
                                    message='Произошла неизвестная ошибка.')
         finally:
-            return redirect('/personal_account/all_expenses')
+            return redirect('/')  # страницу растраты за месяц
     return render_template("add_new_type.html", title="Добавление нового типа", form=form)
 
 
@@ -113,21 +110,7 @@ def personal_account():
     return render_template('personal_account.html', user=current_user)
 
 
-@app.route('/personal_account/all_expenses', methods=['GET'])
-@login_required
-def personal_account_expenses():
-    total = 0
-    type_expenses = {}
-    for i in db_sess.query(Check).filter(Check.time_added.month == datetime.datetime.now().month,
-                                         Check.id_user == current_user.id):
-        total += i.price
-        if i.type in type_expenses.keys():
-            type_expenses[i.type] += i.price
-        else:
-            type_expenses[i.type] = i.price
-    return render_template('main_page.html', user=current_user)
-
-
 if __name__ == '__main__':
-    db_session.global_init("db/web_db.db")
-    app.run()
+    db_session.global_init("db/blogs.db")
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
