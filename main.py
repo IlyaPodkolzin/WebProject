@@ -1,8 +1,8 @@
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user, user_logged_in
 from werkzeug.utils import redirect
-from data import db_session, db_models
+from data import db_session
 
 from data.db_models import User, Check, type_table
 import forms
@@ -106,7 +106,7 @@ def add_new_type():
 @app.route('/personal_account', methods=['GET'])
 @login_required
 def personal_account():
-    render_template('personal_account.html', user=current_user)
+    return render_template('personal_account.html', user=current_user)
 
 
 if __name__ == '__main__':
