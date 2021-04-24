@@ -21,7 +21,10 @@ smtpObj.ehlo()
 smtpObj.login("pweb2800@gmail.com", "123YlWeb")
 
 db_sess = db_session.create_session()
-TYPE = db_sess.query(Type).all()
+type = db_sess.query(Type).all()
+TYPE = list()
+for i in type:
+    TYPE.append(i.name)
 
 
 @login_manager.user_loader
@@ -100,7 +103,7 @@ def add_new_type():
             return render_template("add_new_type.html", title="Добавление нового типа", form=form,
                                    message='Произошла неизвестная ошибка.')
         finally:
-            return redirect('/')  # страницу растраты за месяц
+            return redirect('/personal_account/all_expenses')
     return render_template("add_new_type.html", title="Добавление нового типа", form=form)
 
 
