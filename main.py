@@ -1,4 +1,3 @@
-import datetime
 import os
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
@@ -69,10 +68,9 @@ def logout():
 def add_new_check():
     form = forms.AddCheckForm()
     if form.validate_on_submit():
-        check = Check(form.adress.data, form.id_type.data,
+        check = Check(form.address.data, form.id_type.data,
                       form.information.data, current_user.get_id(), form.price.data)
-        current_user.checks.append(check)
-        db_sess.merge(current_user)
+        db_sess.merge(check)
         db_sess.commit()
         return redirect('/personal_account')  # личный кабинет
     return render_template('add_new_check.html', title="Добавление нового чека", form=form)
@@ -104,26 +102,8 @@ def personal_account():
 @app.route('/all_checks')
 @login_required
 def all_checks():
-    checks = [[el] for el in db_sess.query(Check).filter(Check.id_user == current_user.id).all()]
-    for i in range(len(checks)):
-        checks[i].append(db_sess.query(Type).filter(Type.id == checks[i].id_type).first().name)
-    type_table = db_sess.query(Type).all()
+    checks = [el for el in db_sess.query(Check).filter(Check.id_user == current_user.id).all()]
     return render_template('all_checks.html', checks=checks)
-
-
-#@app.route('/', methods=['GET'])
-#@login_required
-#def personal_account_expenses():
-#    total = 0
-#    type_expenses = {}
-#    for i in db_sess.query(Check).filter(Check.time_added.month == datetime.datetime.today().month,
-#                                         Check.id_user == current_user.id):
-#        total += i.price
-#        if i.type in type_expenses.keys():
-#            type_expenses[i.type] += i.price
-#        else:
-#            type_expenses[i.type] = i.price
-#    return render_template('main_page.html', user=current_user)
 
 
 if __name__ == '__main__':

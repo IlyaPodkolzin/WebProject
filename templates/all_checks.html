@@ -10,20 +10,22 @@
 <li class="nav-item">
     <a class="nav-link" href="/add_new_type">Добавить тип расхода</a>
 </li>
+<li class="nav-item">
+    <a class="nav-link" href="/all_checks">Все чеки</a>
+</li>
 {% endblock %}
 
 {% block base_content %}
 <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
-    <div class="row m-2">
+    <h1 class="my-3">Все чеки:</h1>
+    <div class="row m-2 border border-5 rounded">
         {% for check in checks %}
             <div class="card-body bg-light col-md-3 border border-primary m-3">
-                <h5 class="card-title">{{ check[0].name }}</h5>
+                <h5 class="card-title">Покупка в магазине по адресу {{ check.address }}</h5>
                 <p class="card-text">
-                    Тип расхода: {{ check[1] }}
-                    Краткая информация: {{ check[0].information }}
-                    Цена: {{ check[0].price }}
-                    Адрес магазина: {{ check[0].address }}
-                    Время добавления: {{ check[0].time_added }}
+                    <b>Краткая информация:</b> {{ check.information }}<br>
+                    <b>Цена:</b> {{ check.price }} рублей<br>
+                    <b>Время добавления:</b> {{ check.time_added }}<br>
                 </p>
             </div>
         {% endfor %}
