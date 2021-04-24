@@ -16,10 +16,6 @@ db_session.global_init('web_db.sqlite')
 login_manager = LoginManager(app)
 login_manager.login_view = '/login'
 
-smtpObj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-smtpObj.ehlo()
-smtpObj.login("pweb2800@gmail.com", "123YlWeb")
-
 db_sess = db_session.create_session()
 TYPE = db_sess.query(Type).all()
 
@@ -37,7 +33,6 @@ def registration():
         try:
             db_sess.add(user)
             db_sess.commit()
-            smtpObj.sendmail('pweb2800@gmail.com', "Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
             global MAIL
             MAIL = user.email,
         except IntegrityError:
@@ -81,7 +76,6 @@ def add_new_check():
         current_user.checks.append(check)
         db_sess.merge(current_user)
         db_sess.commit()
-        smtpObj.sendmail('pweb2800@gmail.com', "Вы добавили новый чек!", MAIL)
         return redirect('/')  # страница всех чеков пользователя
     return render_template('add_new_check.html', title="Добавление нового чека", form=form)
 
@@ -95,7 +89,6 @@ def add_new_type():
         try:
             db_sess.add(type)
             db_sess.commit()
-            smtpObj.sendmail('pweb2800@gmail.com', "Вы добавили новую категорию расходов!", MAIL)
         except Exception:
             return render_template("add_new_type.html", title="Добавление нового типа", form=form,
                                    message='Произошла неизвестная ошибка.')
