@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block base_navbar %}
+
+        <li class="nav-item">
+            <a class="nav-link" href="/private">Главная</a>
+        </li>
+
+        {% block private_navbar %}
+        {% endblock %}
+        <li class="nav-item">
+            <a class="nav-link" href="/private/settings">{{ current_user.name }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/logout">Выход</a>
+        </li>
+
+    {% endblock %}
+
+{% block base_content %}
+
+    {% block content %}
+    {% endblock %}
+
+{% endblock %}
