@@ -1,7 +1,8 @@
+import datetime
 import os
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user, user_logged_in
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from werkzeug.utils import redirect
 from data import db_session
 
@@ -37,9 +38,6 @@ def registration():
         try:
             db_sess.add(user)
             db_sess.commit()
-            smtpObj.sendmail('pweb2800@gmail.com', "Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
-            global MAIL
-            MAIL = user.email,
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
@@ -81,7 +79,7 @@ def add_new_check():
         current_user.checks.append(check)
         db_sess.merge(current_user)
         db_sess.commit()
-        return redirect('/')  # страница всех чеков пользователя
+        return redirect('/personal_account')  # личный кабинет
     return render_template('add_new_check.html', title="Добавление нового чека", form=form)
 
 
@@ -98,7 +96,7 @@ def add_new_type():
             return render_template("add_new_type.html", title="Добавление нового типа", form=form,
                                    message='Произошла неизвестная ошибка.')
         finally:
-            return redirect('/')  # страницу растраты за месяц
+            return redirect('/personal_account')  # личный кабинет
     return render_template("add_new_type.html", title="Добавление нового типа", form=form)
 
 
@@ -111,24 +109,26 @@ def personal_account():
 @app.route('/all_checks')
 @login_required
 def all_checks():
-    checks = db_sess.query(Check).all()
+    checks = [[el] for el in db_sess.query(Check).filter(Check.id_user == current_user.id).all()]
+    for i in range(len(checks)):
+        checks[i].append(db_sess.query(Type).filter(Type.id == checks[i].id_type).first().name)
     type_table = db_sess.query(Type).all()
-    render_template('all_checks.html', checks=checks, type_table=type_table)
+    return render_template('all_checks.html', checks=checks)
 
 
-@app.route('/personal_account/all_expenses', methods=['GET'])
-@login_required
-def personal_account_expenses():
-    total = 0
-    type_expenses = {}
-    for i in db_sess.query(Check).filter(Check.time_added.month == datetime.datetime.now().month,
-                                         Check.id_user == current_user.id):
-        total += i.price
-        if i.type in type_expenses.keys():
-            type_expenses[i.type] += i.price
-        else:
-            type_expenses[i.type] = i.price
-    return render_template('all_expenses.html', user=current_user)
+#@app.route('/', methods=['GET'])
+#@login_required
+#def personal_account_expenses():
+#    total = 0
+#    type_expenses = {}
+#    for i in db_sess.query(Check).filter(Check.time_added.month == datetime.datetime.today().month,
+#                                         Check.id_user == current_user.id):
+#        total += i.price
+#        if i.type in type_expenses.keys():
+#            type_expenses[i.type] += i.price
+#        else:
+#            type_expenses[i.type] = i.price
+#    return render_template('main_page.html', user=current_user)
 
 
 if __name__ == '__main__':

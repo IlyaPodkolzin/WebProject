@@ -13,17 +13,17 @@
 {% endblock %}
 
 {% block base_content %}
+<link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
     <div class="row m-2">
         {% for check in checks %}
-            {% expense_type = check.id_type %}
             <div class="card-body bg-light col-md-3 border border-primary m-3">
-                <h5 class="card-title">{{ check.name }} (ID: {{ group.id }})</h5>
+                <h5 class="card-title">{{ check[0].name }}</h5>
                 <p class="card-text">
-                    Тип расхода: {{ type_table.expense_type }}
-                    Краткая информация: {{ check.information }}
-                    Цена: {{ check.price }}
-                    Адрес магазина: {{ check.address }}
-                    Время добавления: {{ check.time_added }}
+                    Тип расхода: {{ check[1] }}
+                    Краткая информация: {{ check[0].information }}
+                    Цена: {{ check[0].price }}
+                    Адрес магазина: {{ check[0].address }}
+                    Время добавления: {{ check[0].time_added }}
                 </p>
             </div>
         {% endfor %}

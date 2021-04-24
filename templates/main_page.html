@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block base_navbar %}
+<link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 <li class="nav-item">
     <a class="nav-link" href="/personal_account">Личный кабинет</a>
 </li>
@@ -16,8 +17,23 @@
 <h1 class="my-3">Главная</h1>
 <h2 class="my-3">Общая информация:</h2>
 <div class="border border-5 rounded p-3">
-    <p>За этот месяц потрачено: {{ }}</p>
+    <p>За этот месяц потрачено: {{ total }}</p>
     <h3>Статистика расходов за месяц:</h3>
+    <div class="row m-2">
+        {% for check in checks %}
+            {% expense_type = check.id_type %}
+            <div class="card-body bg-light col-md-3 border border-primary m-3">
+                <h5 class="card-title">{{ check.name }}</h5>
+                <p class="card-text">
+                    Тип расхода: {{ type_table.expense_type }}
+                    Краткая информация: {{ check.information }}
+                    Цена: {{ check.price }}
+                    Адрес магазина: {{ check.address }}
+                    Время добавления: {{ check.time_added }}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
 
 </div>
 {% endblock %}
