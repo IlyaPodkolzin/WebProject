@@ -18,9 +18,9 @@
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <p>
-        {{ form.adress.label }}<br>
-        {{ form.adress(class="form-control") }}<br>
-        {% for error in form.adress.errors %}
+        {{ form.address.label }}<br>
+        {{ form.address(class="form-control") }}<br>
+        {% for error in form.address.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>

@@ -38,7 +38,7 @@ class CreateTypeForm(FlaskForm):
 
 
 class AddCheckForm(FlaskForm):
-    adress = StringField('Адресс магазина:', validators=[DataRequired()])
+    address = StringField('Адресс магазина:', validators=[DataRequired()])
     price = IntegerField('Сумма покупки:', validators=[DataRequired()])
     id_type = SelectField('Тип расходов:', choices=TYPE, coerce=str, default='другое')
     information = StringField('Дополнительная информация:', validators=[DataRequired()])
