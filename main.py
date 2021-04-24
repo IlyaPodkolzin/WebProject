@@ -129,5 +129,5 @@ def personal_account_expenses():
 
 
 if __name__ == '__main__':
-    db_session.global_init("db/web_db.db")
+    db_session.global_init("db/web_db.sqlite")
     app.run()
