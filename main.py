@@ -4,7 +4,7 @@ from flask_login import LoginManager, current_user, login_required, login_user, 
 from werkzeug.utils import redirect
 from data import db_session
 
-from data.db_models import User, Check, type_table
+from data.db_models import User, Check, Type
 import forms
 import smtplib
 
@@ -20,7 +20,7 @@ smtpObj.ehlo()
 smtpObj.login("pweb2800@gmail.com", "123YlWeb")
 
 db_sess = db_session.create_session()
-TYPE = db_sess.query(type_table).all()
+TYPE = db_sess.query(Type).all()
 
 
 @login_manager.user_loader
@@ -90,7 +90,7 @@ def add_new_check():
 def add_new_type():
     form = forms.CreateTypeForm()
     if form.validate_on_submit():
-        type = type_table(form.name.data)
+        type = Type(form.name.data)
         try:
             db_sess.add(type)
             db_sess.commit()

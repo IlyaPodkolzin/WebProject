@@ -4,9 +4,14 @@ from flask_login import UserMixin
 import datetime
 from data.db_session import ORMBase
 
-type_table = Table('type', ORMBase.metadata,
-                   Column('id', Integer, primary_key=True, autoincrement=True),
-                   Column('name', String, nullable=False))
+
+class Type(ORMBase):
+    __tablename__ = 'type'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+
+    def __init__(self, name):
+        self.name = name
 
 
 class User(ORMBase, UserMixin):
