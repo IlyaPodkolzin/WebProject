@@ -38,7 +38,7 @@ def registration():
             db_sess.commit()
             smtpObj.sendmail('pweb2800@gmail.com', "Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
             global MAIL
-            MAIL = user.email
+            MAIL = user.email,
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
@@ -58,7 +58,7 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect('/')  # в личный кобинет
+            return redirect('/personal_account')  # в личный кобинет
         return render_template('login.html', title="Авторизация", form=form)
     return render_template('login.html', title="Авторизация", form=form)
 
@@ -75,8 +75,8 @@ def logout():
 def add_new_check():
     form = forms.AddCheckForm()
     if form.validate_on_submit():
-        check = Check(form.str_Qr.data, form.id_type.data,
-                      form.description.data, form.information.data)
+        check = Check(form.adress.data, form.id_type.data,
+                      form.information.data, current_user.get_id(), form.price.data)
         current_user.checks.append(check)
         db_sess.merge(current_user)
         db_sess.commit()

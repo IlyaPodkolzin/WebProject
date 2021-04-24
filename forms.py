@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, PasswordField, BooleanField, SelectField, TextAreaField, SubmitField
+from wtforms import StringField, IntegerField, PasswordField, BooleanField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo
 from main import TYPE
 
@@ -38,7 +38,8 @@ class CreateTypeForm(FlaskForm):
 
 
 class AddCheckForm(FlaskForm):
-    str_Qr = StringField('Расшифрованный Qr код из чека:', validators=[DataRequired()])
+    adress = StringField('Адресс магазина:', validators=[DataRequired()])
+    price = IntegerField('Сумма покупки:', validators=[DataRequired()])
     id_type = SelectField('Тип расходов:', choices=TYPE, coerce=str, default='другое')
     information = StringField('Дополнительная информация:', validators=[DataRequired()])
     submit = SubmitField('Добавить')

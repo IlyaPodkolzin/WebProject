@@ -33,14 +33,16 @@ class User(ORMBase, UserMixin):
 class Check(ORMBase):
     __tablename__ = 'checks'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    str_Qr = Column(String, nullable=False)
+    adress = Column(String, nullable=False)
     id_type = Column(Integer, ForeignKey('type.id'))
     time_added = Column(DateTime, nullable=False, default=datetime.datetime.now)
     information = Column(String, nullable=False, default='Просто чек')
+    price = Column(Integer, nullable=False, default=0)
     id_user = Column(Integer, ForeignKey('users.id'))
 
-    def __init__(self, str_Qr, id_type, info, user):
+    def __init__(self, adress, id_type, info, user, price):
         self.id_user = user
-        self.str_Qr = str_Qr
+        self.adress = adress
         self.id_type = id_type
         self.information = info
+        self.price = price

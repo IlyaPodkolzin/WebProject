@@ -20,7 +20,16 @@
     <p>
         {{ form.str_Qr.label }}<br>
         {{ form.str_Qr(class="form-control") }}<br>
-        {% for error in form.str_Qr.errors %}
+        {% for error in form.adress.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.str_Qr.label }}<br>
+        {{ form.str_Qr(class="form-control") }}<br>
+        {% for error in form.price.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
