@@ -37,6 +37,9 @@ def registration():
         try:
             db_sess.add(user)
             db_sess.commit()
+            smtpObj.sendmail('pweb2800@gmail.com', "Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
+            global MAIL
+            MAIL = user.email,
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
@@ -113,7 +116,22 @@ def all_checks():
     render_template('all_checks.html', checks=checks, type_table=type_table)
 
 
+@app.route('/personal_account/all_expenses', methods=['GET'])
+@login_required
+def personal_account_expenses():
+    total = 0
+    type_expenses = {}
+    for i in db_sess.query(Check).filter(Check.time_added.month == datetime.datetime.now().month,
+                                         Check.id_user == current_user.id):
+        total += i.price
+        if i.type in type_expenses.keys():
+            type_expenses[i.type] += i.price
+        else:
+            type_expenses[i.type] = i.price
+    return render_template('all_expenses.html', user=current_user)
+
+
 if __name__ == '__main__':
-    db_session.global_init("db/blogs.db")
+    db_session.global_init("db/web_db.sqlite")
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
