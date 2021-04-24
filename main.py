@@ -2,13 +2,12 @@ import datetime
 import os
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user, user_logged_in
 from werkzeug.utils import redirect
 from data import db_session
 
 from data.db_models import User, Check, Type
 import forms
-import smtplib
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'check_check_key'
@@ -16,10 +15,6 @@ app.config['SECRET_KEY'] = 'check_check_key'
 db_session.global_init('web_db.sqlite')
 login_manager = LoginManager(app)
 login_manager.login_view = '/login'
-
-smtpObj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-smtpObj.ehlo()
-smtpObj.login("pweb2800@gmail.com", "123YlWeb")
 
 db_sess = db_session.create_session()
 TYPE = [el.name for el in db_sess.query(Type).all()]
