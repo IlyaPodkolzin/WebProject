@@ -1,3 +1,4 @@
+import datetime
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user, user_logged_in
@@ -107,6 +108,21 @@ def add_new_type():
 @login_required
 def personal_account():
     return render_template('personal_account.html', user=current_user)
+
+
+@app.route('/personal_account/all_expenses', methods=['GET'])
+@login_required
+def personal_account_expenses():
+    total = 0
+    type_expenses = {}
+    for i in db_sess.query(Check).filter(Check.time_added.month == datetime.datetime.now().month,
+                                         Check.id_user == current_user.id):
+        total += i.price
+        if i.type in type_expenses.keys():
+            type_expenses[i.type] += i.price
+        else:
+            type_expenses[i.type] = i.price
+    return render_template('main_page.html', user=current_user)
 
 
 if __name__ == '__main__':
