@@ -111,6 +111,6 @@ def personal_account():
 
 
 if __name__ == '__main__':
-    db_session.global_init("db/blogs.db")
+    db_session.global_init("db/web_db.sqlite")
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
