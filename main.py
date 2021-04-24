@@ -99,7 +99,7 @@ def add_new_type():
             return render_template("add_new_type.html", title="Добавление нового типа", form=form,
                                    message='Произошла неизвестная ошибка.')
         finally:
-            return redirect('/') # страницу растраты за месяц
+            return redirect('/')  # страницу растраты за месяц
     return render_template("add_new_type.html", title="Добавление нового типа", form=form)
 
 
