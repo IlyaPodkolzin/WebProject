@@ -21,7 +21,7 @@ smtpObj.ehlo()
 smtpObj.login("pweb2800@gmail.com", "123YlWeb")
 
 db_sess = db_session.create_session()
-TYPE = db_sess.query(Type).all()
+TYPE = [el.name for el in db_sess.query(Type).all()]
 
 
 @login_manager.user_loader
@@ -37,9 +37,6 @@ def registration():
         try:
             db_sess.add(user)
             db_sess.commit()
-            smtpObj.sendmail('pweb2800@gmail.com', "Поздравляем, вы зарегистрировались в CheckЧек!", user.email)
-            global MAIL
-            MAIL = user.email,
         except IntegrityError:
             return render_template("registration.html", title="Регистрация", form=form,
                                    message='Данная электронная почта уже зарегистрирована.')
@@ -81,7 +78,6 @@ def add_new_check():
         current_user.checks.append(check)
         db_sess.merge(current_user)
         db_sess.commit()
-        smtpObj.sendmail('pweb2800@gmail.com', "Вы добавили новый чек!", MAIL)
         return redirect('/')  # страница всех чеков пользователя
     return render_template('add_new_check.html', title="Добавление нового чека", form=form)
 
@@ -95,7 +91,6 @@ def add_new_type():
         try:
             db_sess.add(type)
             db_sess.commit()
-            smtpObj.sendmail('pweb2800@gmail.com', "Вы добавили новую категорию расходов!", MAIL)
         except Exception:
             return render_template("add_new_type.html", title="Добавление нового типа", form=form,
                                    message='Произошла неизвестная ошибка.')
@@ -108,6 +103,14 @@ def add_new_type():
 @login_required
 def personal_account():
     return render_template('personal_account.html', user=current_user)
+
+
+@app.route('/all_checks')
+@login_required
+def all_checks():
+    checks = db_sess.query(Check).all()
+    type_table = db_sess.query(Type).all()
+    render_template('all_checks.html', checks=checks, type_table=type_table)
 
 
 if __name__ == '__main__':

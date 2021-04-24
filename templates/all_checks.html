@@ -19,11 +19,13 @@
             <div class="card-body bg-light col-md-3 border border-primary m-3">
                 <h5 class="card-title">{{ check.name }} (ID: {{ group.id }})</h5>
                 <p class="card-text">
-                    Расшифрованный QR-код: {{ check.str_Qr }}
                     Тип расхода: {{ type_table.expense_type }}
                     Краткая информация: {{ check.information }}
+                    Цена: {{ check.price }}
+                    Адрес магазина: {{ check.address }}
                     Время добавления: {{ check.time_added }}
                 </p>
             </div>
+        {% endfor %}
     </div>
 {% endblock %}
