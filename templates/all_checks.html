@@ -17,7 +17,7 @@
         {% for check in checks %}
             {% expense_type = check.id_type %}
             <div class="card-body bg-light col-md-3 border border-primary m-3">
-                <h5 class="card-title">{{ check.name }} (ID: {{ group.id }})</h5>
+                <h5 class="card-title">{{ check.name }}</h5>
                 <p class="card-text">
                     Расшифрованный QR-код: {{ check.str_Qr }}
                     Тип расхода: {{ type_table.expense_type }}

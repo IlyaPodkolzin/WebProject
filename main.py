@@ -1,3 +1,4 @@
+import datetime
 import os
 from sqlite3.dbapi2 import IntegrityError
 from flask import Flask, render_template
@@ -7,7 +8,6 @@ from data import db_session
 
 from data.db_models import User, Check, Type
 import forms
-import smtplib
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'check_check_key'
@@ -76,7 +76,7 @@ def add_new_check():
         current_user.checks.append(check)
         db_sess.merge(current_user)
         db_sess.commit()
-        return redirect('/')  # страница всех чеков пользователя
+        return redirect('/personal_account/all_expenses')
     return render_template('add_new_check.html', title="Добавление нового чека", form=form)
 
 
@@ -93,7 +93,7 @@ def add_new_type():
             return render_template("add_new_type.html", title="Добавление нового типа", form=form,
                                    message='Произошла неизвестная ошибка.')
         finally:
-            return redirect('/')  # страницу растраты за месяц
+            return redirect('/personal_account/all_expenses')  # страницу растраты за месяц
     return render_template("add_new_type.html", title="Добавление нового типа", form=form)
 
 
@@ -101,6 +101,12 @@ def add_new_type():
 @login_required
 def personal_account():
     return render_template('personal_account.html', user=current_user)
+
+
+@app.route('/personal_account/all_expenses', methods=['GET'])
+@login_required
+def all_checks():
+    return render_template('all_checks.html', user=current_user)
 
 
 @app.route('/personal_account/all_expenses', methods=['GET'])
